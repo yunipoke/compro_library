@@ -1,0 +1,126 @@
+struct Modint
+{
+    private:
+    unsigned int value;
+    static int &MOD()
+    {
+	    static int mod = 0;
+	    return mod;
+    }
+    public:
+    static void setmod(const int m) {MOD() = m;}
+
+    Modint(const long long x = 0) noexcept
+    {
+	    long long y = x;
+	    if(y < 0 || y >= MOD())
+	    {
+		    y %= MOD();
+		    if(y < 0) y += MOD();
+	    }
+	    value = (unsigned int)y;
+    }
+
+    unsigned int &val() noexcept {return value;}
+
+    Modint operator+(const Modint &other) noexcept
+    {
+        Modint tmp = *this;
+        return tmp += other;
+    }
+
+    Modint operator-(const Modint &other) noexcept
+    {
+        Modint tmp = *this;
+        return tmp -= other;
+    }
+
+    Modint operator*(const Modint &other) noexcept
+    {
+        Modint tmp = *this;
+        return tmp *:= other;
+    }
+
+    Modint operator/(const Modint &other) noexcept
+    {
+        Modint tmp = *this;
+        return tmp /= other;
+    }
+
+    Modint &operator+=(const Modint &other) noexcept
+    {
+        value += other.value;
+        if(value >= MOD()) value -= MOD();
+
+        return *this;
+    }
+    
+    Modint &operator-=(const Modint &other) noexcept
+    {
+        unsigned long long x = value;
+        if(x < other.value) x += MOD();
+        x -= other.value;
+
+        value = (unsigned int) x;
+
+        return *this;
+    }
+
+    Modint &operator*=(const Modint &other) noexcept
+    {
+        unsigned long long x = value;
+        x *= other.value;
+        value = (unsigned int)(x%MOD());
+
+        return *this;
+    }
+
+    Modint &operator/=(const Modint &other) noexcept
+    {
+        return *this = *this * other.inverse();
+    }
+
+    Modint power(long ex) const noexcept
+    {
+        assert(ex >= 0);
+        Modint p = *this,res = 1;
+
+        while(ex)
+        {
+            if(ex & 1) res *= p;
+            p *= p;
+            ex >>= 1;
+        }
+
+        return res;
+    }
+
+    Modint inverse() const noexcept
+    {
+        assert(value);
+        long long a = value,b = MOD(),x = 1,y = 0;
+
+        while(b)
+        {
+            long long q = a/b;
+
+            a -= q*b; swap(a,b);
+            x -= q*y; swap(x,y);
+        }
+
+        return Modint(x);
+    }
+
+    Modint &operator++(int) noexcept {return *this += 1;}
+
+    Modint &operator--(int) noexcept {return *this -= 1;}
+
+    bool operator==(const Modint &other){return value == other.value;}
+
+    bool operator!=(const Modint &other){return value != other.value;}
+    
+    friend ostream &operator<<(ostream &os,const Modint &x);
+};
+
+ostream &operator<<(ostream &os,const Modint &x){os << x.value; return os;}
+using mint = Modint;

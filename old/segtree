@@ -1,0 +1,65 @@
+template<class T,T (*op)(T,T),T (*e)()> struct SegmentTree
+{
+    private:
+    int siz;
+    vector<T> node;
+
+    public:
+    SegmentTree(int n) noexcept
+    {
+        siz = 1;
+        while(siz < n) siz <<= 1;
+
+        node.assign(2*siz-1,e());
+    }
+
+    void replace(int pos,T x) noexcept {func_update(pos,x,[](T u,T v){return u = v;});}
+
+    void add(int pos,T x) noexcept {func_update(pos,x,[](T u,T v){return u+v;});}
+
+    void func_update(int pos,T x) noexcept {func_update(pos,x,op);}
+    
+    void func_update(int pos,T x,T (*func)(T,T)) noexcept
+    {
+        assert(0 <= pos && pos < siz);
+        pos += siz - 1;
+
+        node[pos] = func(node[pos],x);
+
+        while(pos)
+        {
+            pos = (pos-1)/2;
+            node[pos] = op(node[2*pos+1],node[2*pos+2]);
+        }
+    }
+
+    T operator [](int pos) noexcept
+    {
+        assert(0 <= pos && pos < siz);
+        return node[pos+siz-1];
+    }
+
+    T prod(int l,int r) noexcept
+    {
+        assert(0 <= l && l <= r && r <= siz);
+
+        l += siz-1;
+        r += siz-1;
+
+        T Lval = e();
+        T Rval = e();
+
+        while(l < r)
+        {
+            if(!(l & 1)) Lval = op(Lval,node[l++]);
+            if(!(r & 1)) Rval = op(node[--r],Rval);
+
+            l >>= 1;
+            r >>= 1;
+        }
+
+        return op(Lval,Rval);
+    }
+
+    T prod() noexcept {return node[0];}
+};
