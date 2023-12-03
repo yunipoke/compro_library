@@ -16,6 +16,19 @@ struct SCC
 		seen.assign(N,0);
 	}
 
+	int read(int M,vector<vector<int>> &H)
+	{
+		for(;M--;)
+		{
+			int u,v;
+			cin >> u >> v;
+			u--; v--;
+			add_edge(u,v);
+		}
+
+		return build(H);
+	}
+
 	void add_edge(int u,int v)
 	{
 		assert(0 <= u && u < N && 0 <= v && v < N);
