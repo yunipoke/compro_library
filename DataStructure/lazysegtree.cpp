@@ -24,14 +24,16 @@ template<class T,T (*op)(T,T),T e(),class F,T (*mapping)(F,T),F (*composition)(F
     void recalculate(int u) {node[u] = op(node[2*u],node[2*u+1]);}
 
     public:
-    LazySegmentTree(int n)
+    LazySegmentTree(int n = 0) : LazySegmentTree(vector<T>(n,e())) {}
+    LazySegmentTree(const vector<T> &V)
     {
-        siz = 1;
-        log = 0;
-        while(siz < n) siz <<= 1,log++;
-
-        node.assign(2*siz,e());
-        lazy.assign(siz,id());
+	    siz = 1;
+	    log = 0;
+	    while(siz < (int)V.size()) siz <<= 1,log++;
+	    node.assign(2*siz,e());
+	    lazy.assign(siz,id());
+	    for(int i = 0;i < (int)V.size();i++) node[i+siz] = V[i];
+	    for(int i = siz-1;i >= 1;i--) recalculate(i);
     }
 
     void fill(T x,int l = 0,int r = -1) {if(r < 0){r = siz;} for(int i = l;i < r;i++) replace(i,x);}
