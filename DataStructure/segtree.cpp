@@ -49,4 +49,54 @@ template<class T,T (*op)(T,T),T (*e)()> struct segtree
 		return op(L,R);
 	}
 	T prod() {return node[1];}
+
+	template<class F> int max_right(int l,F f)
+	{
+		assert(0 <= l && l <= N);
+		assert(f(e()));
+		if(l == N) return N;
+		l += size;
+		T val = e();
+		do
+		{
+			while(!(l & 1)) l >>= 1;
+			if(!f(op(val,node[l])))
+			{
+				while(l < size)
+				{
+					l <<= 1;
+					if(f(op(val,node[l]))) val = op(val,node[l++]);
+				}
+				return l - size;
+			}
+			val = op(val,node[l++]);
+		} while((l & -l) != l);
+		return N;
+	}
+
+	template<class F> int min_left(int r,F f)
+	{
+		assert(0 <= r && r <= N);
+		assert(f(e()));
+		if(r == 0) return 0;
+		r += size;
+		T val = e();
+		do
+		{
+			r--;
+			while(r > 1 && (r & 1)) r >>= 1;
+			if(!f(op(node[r],val)))
+			{
+				while(r < size)
+				{
+					r <<= 1;
+					r++;
+					if(f(op(node[r],val))) val = op(node[r--],val);
+				}
+				return r + 1 - size;
+			}
+			val = op(node[r],val);
+		} while((r & -r) != r);
+		return 0;
+	}
 };
