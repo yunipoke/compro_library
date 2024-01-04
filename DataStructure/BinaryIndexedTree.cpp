@@ -1,4 +1,4 @@
-template<class T> struct BIT
+template<class T> struct BinaryIndexedTree
 {
 	private:
 	int N;
@@ -6,8 +6,8 @@ template<class T> struct BIT
 
 	public:
 
-	BIT() : N(0) {}
-	BIT(int N) : N(N), node(N) {}
+	BinaryIndexedTree() : N(0) {}
+	BinaryIndexedTree(int N) : N(N), node(N) {}
 
 	void add(int pos,T x)
 	{
