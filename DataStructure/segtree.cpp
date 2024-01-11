@@ -11,7 +11,7 @@ template<class T,T (*op)(T,T),T (*e)()> struct segtree
 		N = (int)V.size();
 		size = 1;
 		while(size < N) size <<= 1;
-		node.resize(2*size);
+		node.assign(2*size,e());
 		for(int i = 0;i < N;i++) node[i+size] = V[i];
 		for(int i = size-1;i >= 1;i--) node[i] = op(node[i*2],node[i*2+1]);
 	}
