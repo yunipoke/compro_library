@@ -1,6 +1,3 @@
-#include<vector>
-using namespace std;
-
 vector<pair<long long,int>> PrimeFactorize(long long N)
 {
 	vector<pair<long long,int>> res;
