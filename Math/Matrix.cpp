@@ -78,4 +78,4 @@ template<class T> struct Matrix
 		return os;
 	}
 };
-/* using mat = Matrix<mint> */
+/* using mat = Matrix<mint>; */

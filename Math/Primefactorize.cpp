@@ -1,21 +1,23 @@
 #include<vector>
+using namespace std;
 
-vector<pair<long long,int>> primefactorize(long long n)
+vector<pair<long long,int>> PrimeFactorize(long long N)
 {
-	vector<pair<long long,int>> ret;
-	for(long long p = 2;p*p <= n;p++)
+	vector<pair<long long,int>> res;
+	for(long long p = 2;p * p <= N;p++)
 	{
-		if(n%p == 0)
+		res.push_back(make_pair(p,0));
+		while(N % p == 0)
 		{
-			int e = 0;
-			while(n%p == 0) n /= p,e++;
-
-			ret.push_back(make_pair(p,e));
+			N /= p;
+			res.back().second++;
 		}
 	}
+	
+	if(N > 1)
+	{
+		res.push_back(make_pair(N,1));
+	}
 
-	if(n > 1) ret.push_back(make_pair(n,1));
-
-	return ret;
+	return res;
 }
-
