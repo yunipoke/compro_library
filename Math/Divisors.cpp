@@ -1,18 +1,16 @@
-#include<vector>
-#include<algorithm>
-vector<long long> divisors(long long n)
+vector<long long> Divisors(long long N)
 {
-	vector<long long> ret;
-	for(long long i = 1;i*i <= n;i++)
+	vector<long long> res;
+	for(long long i = 1;i * i <= N;i++)
 	{
-		if(n%i == 0)
+		if(N % i == 0)
 		{
-			ret.push_back(i);
-			if(i != n/i) ret.push_back(n/i);
+			res.push_back(i);
+			if(i != N / i) res.push_back(N / i);
 		}
 	}
 
-	sort(ret.begin(),ret.end());
+	sort(res.begin(),res.end());
 
-	return ret;
+	return res;
 }
