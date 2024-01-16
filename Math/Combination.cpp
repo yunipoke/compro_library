@@ -81,8 +81,10 @@ template<int m> struct modint
 template<class S>
 struct combination
 {
+	private:
 	vector<S> f,invf;
 
+	public:
 	combination(int N = 0) : f(1,1),invf(1,1)
 	{
 		update(N);
@@ -125,12 +127,6 @@ struct combination
 		assert(0 <= K && K <= N);
 		update(N);
 		return f[N]*invf[K]*invf[N-K];
-	}
-
-	S H(int N,int K)
-	{
-		if(!N) return K == 0 ? 1:0;
-		return C(N+K-1,K);
 	}
 };
 combination<mint> C;
