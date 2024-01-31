@@ -15,6 +15,12 @@ template<int m> struct modint
 		}
 		value = (unsigned int)y;
 	}
+	static constexpr int get_mod() noexcept {return m;}
+	static constexpr int primitive_root() noexcept
+	{
+		assert(m == 998244353);
+		return 3;
+	}
 	constexpr unsigned int val() noexcept {return value;}
 	constexpr modint &operator+=(const modint &other) noexcept
 	{
