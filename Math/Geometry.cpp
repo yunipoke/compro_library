@@ -1,3 +1,11 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <cstdlib>
+#include <cassert>
+#include <cmath>
+using namespace std;
+
 namespace geometry
 {
 	using real = double;
@@ -57,7 +65,7 @@ namespace geometry
 
 	ostream &operator<<(ostream &os,const Point &p)
 	{
-		return os << "(" << p.x << ", " << p.y << ")";
+		return os << p.x << " " << p.y;
 	}
 
 	struct Line
@@ -138,10 +146,20 @@ namespace geometry
 	{
 		return EQ(dot(a,b),0);
 	}
+	
+	bool orthogonal(const Line &a,const Line &b)
+	{
+		return orthogonal(vec(a),vec(b));
+	}
 
 	bool parallel(const Point &a,const Point &b)
 	{
 		return EQ(cross(a,b),0);
+	}
+
+	bool parallel(const Line &a,const Line &b)
+	{
+		return parallel(vec(a),vec(b));
 	}
 
 	bool intersect(const Line &l,const Point &p)
@@ -154,12 +172,71 @@ namespace geometry
 		return ccw(s.p1,s.p2,p) == ON_SEGMENT;
 	}
 
+	bool intersect(const Segment &a,const Segment &b)
+	{
+		return ccw(a.p1,a.p2,b.p1) * ccw(a.p1,a.p2,b.p2) <= 0 && ccw(b.p1,b.p2,a.p1) * ccw(b.p1,b.p2,a.p2) <= 0;
+	}
+
+	Point cross_point(const Line &a,const Line &b)
+	{
+		real s1 = cross(vec(a),b.p1 - a.p1);
+		real s2 = -cross(vec(a),b.p2 - a.p1);
+		return b.p1 + vec(b) * (s1 / (s1 + s2));
+	}
+
 	enum
 	{
 		OUT,
 		ON,
 		IN
 	};
+
+	Polygon convex_hull(Polygon P,bool ONLINE = false,bool SORT = false)
+	{
+		if((int)P.size() <= 2)
+		{
+			return P;
+		}
+		sort(P.begin(),P.end());
+		Polygon res(2 * P.size());
+		int sz = 0;
+		real threshold = EPS;
+		if(ONLINE)
+		{
+			threshold = -EPS;
+		}
+
+		for(int i = 0;i < (int)P.size();i++)
+		{
+			while(sz >= 2 && cross(res[sz - 1] - res[sz - 2],P[i] - res[sz - 1]) < threshold)
+			{
+				sz--;
+			}
+			res[sz++] = P[i];
+		}
+		for(int i = (int)P.size() - 2,t = sz + 1;i >= 0;i--)
+		{
+			while(sz >= t && cross(res[sz - 1] - res[sz - 2],P[i] - res[sz - 1]) < threshold)
+			{
+				sz--;
+			}
+			res[sz++] = P[i];
+		}
+		res.resize(sz - 1);
+		if(SORT)
+		{
+			int mi = 0;
+			for(int i = 1;i < (int)res.size();i++)
+			{
+				if((EQ(res[mi].y,res[i].y) && res[mi].x > res[i].x) || res[mi].y > res[i].y)
+				{
+					mi = i;
+				}
+			}
+			rotate(res.begin(),res.begin() + mi,res.end());
+		}
+		return res;
+	}
 
 	int convex_contain(const Polygon &P,const Point &p)
 	{
