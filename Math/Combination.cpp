@@ -15,6 +15,12 @@ template<int m> struct modint
 		}
 		value = (unsigned int)y;
 	}
+	static constexpr int get_mod() noexcept {return m;}
+	static constexpr int primitive_root() noexcept
+	{
+		assert(m == 998244353);
+		return 3;
+	}
 	constexpr unsigned int val() noexcept {return value;}
 	constexpr modint &operator+=(const modint &other) noexcept
 	{
@@ -75,8 +81,9 @@ template<int m> struct modint
 	friend modint operator/(const modint& lhs, const modint& rhs) {return modint(lhs) /= rhs;}
 	friend ostream &operator<<(ostream &os,const modint &x) {return os << x.value;}
 };
-/* using mint = modint<998244353>; */
+using mint = modint<998244353>;
 /* using mint = modint<1000000007>; */
+
 
 template<class S>
 struct combination
